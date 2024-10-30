@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=auth
+    ports:
+      - "5434:5432"
+    restart: on-failure
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # AMQP порт для приложений
+      - "15672:15672" # веб-интерфейс
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: on-failure
+
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: auth
+    volumes:
+      - ./auth/migrations:/auth/migrations
+    environment:
+      - DB_DSN=${DB_AUTH_ADDR}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - rabbitmq
+    command: ["sh", "-c", "/auth/wait-for-rabbitmq.sh && ./auth"]
+
+  products:
+    build:
+      context: ./products
+      dockerfile: Dockerfile
+    container_name: products
+    volumes:
+      - ./products/migrations:/products/migrations
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_DSN=${DB_PRODUCTS_ADDR}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+    command: ["sh", "-c", "/products/wait-for-rabbitmq.sh && ./products"]
