@@ -1,4 +1,4 @@
-module github.com/lahnasti/go-market/auth
+module github.com/wileytor/go-market/auth
 
 go 1.23.1
 

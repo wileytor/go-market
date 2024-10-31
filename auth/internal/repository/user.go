@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/huandu/go-sqlbuilder"
-	"github.com/lahnasti/go-market/common/models"
+	"github.com/wileytor/go-market/common/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -83,7 +83,7 @@ func (db *DBstorage) IsUsernameUnique(username string) (bool, error) {
 	return count == 0, nil
 }
 
-func (db *DBstorage) UserExists(id int)(bool, error){
+func (db *DBstorage) UserExists(id int) (bool, error) {
 	var exists bool
 	query := "SELECT EXISTS (SELECT 1 FROM users WHERE id = $1)"
 	err := db.Pool.QueryRow(context.Background(), query, id).Scan(&exists)

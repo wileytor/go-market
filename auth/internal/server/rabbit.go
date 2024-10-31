@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/lahnasti/go-market/common/models"
 	"github.com/streadway/amqp"
+	"github.com/wileytor/go-market/common/models"
 )
 
 func StartListener(s *Server) {

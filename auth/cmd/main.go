@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/lahnasti/go-market/auth/internal/config"
-	"github.com/lahnasti/go-market/auth/internal/logger"
-	"github.com/lahnasti/go-market/auth/internal/repository"
-	"github.com/lahnasti/go-market/auth/internal/server"
-	"github.com/lahnasti/go-market/auth/internal/server/routes"
-	"github.com/lahnasti/go-market/lib/rabbitmq"
+	"github.com/wileytor/go-market/auth/internal/config"
+	"github.com/wileytor/go-market/auth/internal/logger"
+	"github.com/wileytor/go-market/auth/internal/repository"
+	"github.com/wileytor/go-market/auth/internal/server"
+	"github.com/wileytor/go-market/auth/internal/server/routes"
+	"github.com/wileytor/go-market/common/rabbitmq"
 	"golang.org/x/sync/errgroup"
 )
 

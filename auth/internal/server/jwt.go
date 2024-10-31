@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	j "github.com/lahnasti/go-market/common/jwt"
+	j "github.com/wileytor/go-market/common/jwt"
 )
 
 func CreateJWTToken(id int) (string, error) {
