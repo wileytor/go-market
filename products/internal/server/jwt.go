@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/golang-jwt/jwt"
-	j "github.com/lahnasti/go-market/common/jwt"
+	j "github.com/wileytor/go-market/common/jwt"
 )
 
 func CheckToken(tokenStr string) (int, error) {

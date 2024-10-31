@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/lahnasti/go-market/common/models"
+import "github.com/wileytor/go-market/common/models"
 
 type Repository interface {
 	PurchaseRepository

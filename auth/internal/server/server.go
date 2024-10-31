@@ -2,11 +2,11 @@ package server
 
 import (
 	"context"
+	"github.com/wileytor/go-market/common/rabbitmq"
 
 	"github.com/go-playground/validator"
 	"github.com/rs/zerolog"
 	"github.com/wileytor/go-market/auth/internal/repository"
-	"github.com/wileytor/go-market/lib/rabbitmq"
 )
 
 type Server struct {

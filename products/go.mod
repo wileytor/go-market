@@ -6,9 +6,8 @@ require (
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
-	github.com/lahnasti/go-market/common v0.0.0-20241028135109-06b1e4c64819
-	github.com/lahnasti/go-market/lib v0.0.0-20241017095002-e64c25fb6d6e
 	github.com/streadway/amqp v1.1.0
+	github.com/wileytor/go-market/common v0.0.0-20241031094837-6a1c9e2dfb28
 	golang.org/x/sync v0.8.0
 )
 
@@ -51,7 +50,6 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.18.1
-	github.com/google/uuid v1.6.0
 	github.com/huandu/go-sqlbuilder v1.30.1
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect

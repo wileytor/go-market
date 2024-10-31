@@ -3,8 +3,8 @@ package server
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"github.com/lahnasti/go-market/common/models"
 	"github.com/streadway/amqp"
+	"github.com/wileytor/go-market/common/models"
 	"github.com/wileytor/go-market/products/internal/server/responses"
 	"log"
 	"net/http"

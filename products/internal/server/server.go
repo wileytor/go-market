@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
+	"github.com/wileytor/go-market/common/rabbitmq"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/lahnasti/go-market/lib/rabbitmq"
 	"github.com/rs/zerolog"
 	"github.com/wileytor/go-market/products/internal/repository"
 )

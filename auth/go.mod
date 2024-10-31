@@ -4,9 +4,8 @@ go 1.23.1
 
 require (
 	github.com/jackc/pgx/v5 v5.7.1
-	github.com/lahnasti/go-market/common v0.0.0-20241028135109-06b1e4c64819
-	github.com/lahnasti/go-market/lib v0.0.0-20241017095002-e64c25fb6d6e
 	github.com/streadway/amqp v1.1.0
+	github.com/wileytor/go-market/common v0.0.0-20241031094837-6a1c9e2dfb28
 )
 
 require (

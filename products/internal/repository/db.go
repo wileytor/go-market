@@ -9,7 +9,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// EnsureAuthDatabaseExists проверяет наличие базы данных для сервиса auth и создаёт её при необходимости.
 func EnsureMarketDatabaseExists(connString string) error {
 	const dbName = "products"
 	connStringForCreation := "postgres://nastya:pgspgs@db:5432/postgres?sslmode=disable"

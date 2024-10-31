@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lahnasti/go-market/common/models"
+	"github.com/wileytor/go-market/common/models"
 	"github.com/wileytor/go-market/products/internal/server/responses"
 )
 
