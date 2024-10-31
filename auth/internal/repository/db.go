@@ -31,7 +31,6 @@ func EnsureAuthDatabaseExists(connString string) error {
 	return nil
 }
 
-// Общая функция для проверки и создания базы данных
 func EnsureDatabaseExists(conn *pgx.Conn, dbName string) error {
 	// Проверяем, существует ли база данных
 	var exists bool

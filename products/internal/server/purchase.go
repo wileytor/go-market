@@ -2,16 +2,14 @@ package server
 
 import (
 	"encoding/json"
-	"log"
-	"net/http"
-	"strconv"
-	"time"
-
-	"github.com/google/uuid"
 	"github.com/gin-gonic/gin"
 	"github.com/lahnasti/go-market/common/models"
 	"github.com/lahnasti/go-market/products/internal/server/responses"
 	"github.com/streadway/amqp"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 // MakePurchaseHandler обрабатывает создание новой покупки
@@ -31,6 +29,16 @@ func (s *Server) MakePurchaseHandler(ctx *gin.Context) {
 		responses.SendError(ctx, http.StatusUnauthorized, "The header is missing", nil)
 		return
 	}
+	if err := s.EnsureConnection(); err != nil {
+		responses.SendError(ctx, http.StatusInternalServerError, "Failed to connect to RabbitMQ", err)
+		return
+	}
+
+	if s.Rabbit.Channel == nil {
+		responses.SendError(ctx, http.StatusInternalServerError, "RabbitMQ channel is not open", nil)
+		return
+	}
+
 	var purchase models.Purchase
 	if err := ctx.ShouldBindJSON(&purchase); err != nil {
 		responses.SendError(ctx, http.StatusBadRequest, "Invalid request data", err)
@@ -49,7 +57,8 @@ func (s *Server) MakePurchaseHandler(ctx *gin.Context) {
 		responses.SendError(ctx, http.StatusBadRequest, "Quantity must be greater than 0", nil)
 		return
 	}
-	tempQueueName := "temp_queue_" + uuid.New().String()
+	tempQueueName := "temp_queue"
+
 	ch := s.Rabbit.Channel
 
 	_, err = ch.QueueDeclare(tempQueueName, false, true, true, false, nil)
@@ -57,10 +66,15 @@ func (s *Server) MakePurchaseHandler(ctx *gin.Context) {
 		responses.SendError(ctx, http.StatusInternalServerError, "Failed to declare temp queue", err)
 		return
 	}
-	defer ch.QueueDelete(tempQueueName, false, false, false)
+	defer func() {
+		if _, err := ch.QueueDelete(tempQueueName, false, false, false); err != nil {
+			log.Printf("Failed to delete temp queue: %v", err)
+		}
+	}()
 
 	mes := models.TokenCheckMessage{
-		Token: tokenStr,
+		Token:     tokenStr,
+		TempQueue: tempQueueName,
 	}
 	mesBytes, err := json.Marshal(mes)
 	if err != nil {
@@ -68,42 +82,64 @@ func (s *Server) MakePurchaseHandler(ctx *gin.Context) {
 		return
 	}
 	if err := s.Rabbit.PublishMessage("user_check_queue", mesBytes); err != nil {
+		log.Printf("MakePurchaseHandler: ошибка публикации сообщения: %v", err)
 		responses.SendError(ctx, http.StatusInternalServerError, "Failed to publish message to queue", err)
 		return
 	}
+	log.Println("MakePurchaseHandler: сообщение опубликовано")
+
+	resultChan := make(chan bool)
 
 	go func() {
 		err := s.Rabbit.ConsumeMessage(tempQueueName, func(msg amqp.Delivery) {
-			tempQueueHandler(ctx, msg, s, purchase)
+			tempQueueHandler(ctx, msg, s, purchase, resultChan)
 		})
 		if err != nil {
 			log.Printf("Failed to consume temp queue message: %v", err)
+			resultChan <- false
 		}
 	}()
 
-	// Устанавливаем таймаут для ответа
-	time.Sleep(5 * time.Second)
+	select {
+	case success := <-resultChan:
+		if success {
+			log.Println("MakePurchaseHandler: покупка успешно обработана")
+			return // Ответ отправлен в tempQueueHandler
+		}
+		log.Println("MakePurchaseHandler: ошибка при обработке покупки")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Ошибка при обработке покупки", nil)
+	case <-time.After(15 * time.Second):
+		log.Println("MakePurchaseHandler: таймаут при обработке покупки")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Таймаут при обработке покупки", nil)
+	}
 }
 
 // Обработчик временной очереди
-func tempQueueHandler(ctx *gin.Context, msg amqp.Delivery, s *Server, purchase models.Purchase) {
+func tempQueueHandler(ctx *gin.Context, msg amqp.Delivery, s *Server, purchase models.Purchase, resultChan chan bool) {
+	defer close(resultChan) // Закрываем канал по завершении
+
 	var response models.TokenCheckResponse
 	if err := json.Unmarshal(msg.Body, &response); err != nil {
 		responses.SendError(ctx, http.StatusInternalServerError, "Failed to unmarshal response", err)
+		resultChan <- false
 		return
 	}
 
 	if response.Valid {
-		// Выполняем покупку, если токен валиден
 		purchase.UserID = response.UserID
 		purchaseID, err := s.Db.MakePurchase(purchase)
 		if err != nil {
 			responses.SendError(ctx, http.StatusInternalServerError, "Purchase failed", err)
+			resultChan <- false
 			return
 		}
 		responses.SendSuccess(ctx, http.StatusOK, "Purchase successful", purchaseID)
+		resultChan <- true // Успешная обработка
 	} else {
 		responses.SendError(ctx, http.StatusUnauthorized, "Invalid token", nil)
+		resultChan <- false // Некорректный токен
 	}
 }
 

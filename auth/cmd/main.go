@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -68,10 +69,15 @@ func main() {
 	}
 	defer dbStorage.Close()
 
+	var wg sync.WaitGroup
 	group, gCtx := errgroup.WithContext(ctx)
 	srv := server.NewServer(gCtx, dbStorage, zlog, rabbit)
-	
-	server.StartListener(srv)
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		server.StartListener(srv)
+	}()
 
 	group.Go(func() error {
 		r := routes.SetupAuthRoutes(srv)
@@ -92,6 +98,11 @@ func main() {
 		<-gCtx.Done()
 		return gCtx.Err()
 	})
+
+	go func() {
+		wg.Wait()
+		cancel()
+	}()
 
 	if err := group.Wait(); err != nil {
 		zlog.Fatal().Err(err).Msg("Error during server shutdown")
