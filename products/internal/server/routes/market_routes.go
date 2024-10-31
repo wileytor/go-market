@@ -2,8 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lahnasti/go-market/products/internal/server"
-
+	"github.com/wileytor/go-market/products/internal/server"
 )
 
 func SetupMarketRoutes(s *server.Server) *gin.Engine {

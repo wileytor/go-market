@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lahnasti/go-market/common/models"
-	"github.com/lahnasti/go-market/products/internal/server/responses"
+	"github.com/wileytor/go-market/products/internal/server/responses"
 )
 
 func (s *Server) deleter(ctx context.Context) {

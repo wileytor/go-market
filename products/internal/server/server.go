@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/lahnasti/go-market/lib/rabbitmq"
-	"github.com/lahnasti/go-market/products/internal/repository"
 	"github.com/rs/zerolog"
+	"github.com/wileytor/go-market/products/internal/repository"
 )
 
 type Server struct {

@@ -1,4 +1,4 @@
-module github.com/lahnasti/go-market/products
+module github.com/wileytor/go-market/products
 
 go 1.23.1
 
