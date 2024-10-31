@@ -14,13 +14,12 @@ type Config struct {
 }
 
 const (
-	defaultAddr         = ":8080"
+	defaultAddr         = ":8082"
 	defaultDbDSN        = "postgres://nastya:pgspgs@db:5432/auth?sslmode=disable"
 	defaultMigratePath  = "migrations"
 	defaultRabbitMQHost = "rabbitmq"
 )
 
-// Функция обработки флагов запуска
 func ReadConfig() Config {
 	var addr string
 	var dbAddr string
