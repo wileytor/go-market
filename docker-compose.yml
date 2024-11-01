@@ -28,6 +28,7 @@ services:
     container_name: auth
     volumes:
       - ./auth/migrations:/auth/migrations
+      - ./auth/tls:/auth/tls
     environment:
       - DB_DSN=${DB_AUTH_ADDR}
       - RABBITMQ_URL=${RABBITMQ_URL}
@@ -45,6 +46,7 @@ services:
     container_name: products
     volumes:
       - ./products/migrations:/products/migrations
+      - ./products/tls:/products/tls
     depends_on:
       - db
       - rabbitmq
@@ -60,9 +62,15 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: gateway
+    volumes:
+      - ./nginx/tls/server.crt:/etc/nginx/ssl/server.crt
+      - ./nginx/tls/server.key:/etc/nginx/ssl/server.key
+      - ./nginx/tls/ca_cert.pem:/etc/nginx/ssl/ca_cert.pem
+      - ./nginx/tls/client_cert.pem:/etc/nginx/ssl/client_cert.pem
+      - ./nginx/tls/client_key.pem:/etc/nginx/ssl/client_key.pem
     depends_on:
       - auth
       - products
     ports:
-      - "8080:8080"
+      - "443:443"
 

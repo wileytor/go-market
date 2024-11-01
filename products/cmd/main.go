@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -92,8 +93,8 @@ func main() {
 		r := routes.SetupMarketRoutes(srv)
 		zlog.Info().Msg("Server was started")
 
-		if err := r.Run(cfg.Addr); err != nil {
-			return err
+		if err := r.RunTLS(cfg.Addr, "./tls/server.crt", "./tls/server.key"); err != nil {
+			log.Fatalf("Failed to start server: %v", err)
 		}
 		return nil
 	})

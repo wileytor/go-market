@@ -20,11 +20,6 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// @title Go-market
-// @version 1.0
-// @description This is a sample server for market.
-// @host localhost:8080
-// @BasePath /
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
@@ -83,8 +78,8 @@ func main() {
 		r := routes.SetupAuthRoutes(srv)
 		zlog.Info().Msg("Server was started")
 
-		if err := r.Run(cfg.Addr); err != nil {
-			return err
+		if err := r.RunTLS(cfg.Addr, "./tls/server.crt", "./tls/server.key"); err != nil {
+			log.Fatalf("Failed to start server: %v", err)
 		}
 		return nil
 	})

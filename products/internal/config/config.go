@@ -20,7 +20,6 @@ const (
 	defaultRabbitMQHost = "rabbitmq"
 )
 
-// Функция обработки флагов запуска
 func ReadConfig() Config {
 	var addr string
 	var dbAddr string
