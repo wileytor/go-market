@@ -4,9 +4,11 @@ go 1.23.1
 
 require (
 	github.com/go-playground/validator/v10 v10.20.0
+	github.com/go-resty/resty/v2 v2.15.3
 	github.com/golang/mock v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/streadway/amqp v1.1.0
+	github.com/wileytor/go-market v0.0.0-20241101102525-5ba3db78fdfc
 	github.com/wileytor/go-market/common v0.0.0-20241031094837-6a1c9e2dfb28
 	golang.org/x/sync v0.8.0
 )
@@ -36,6 +38,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
